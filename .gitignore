@@ -3,3 +3,5 @@ venv/
 # Don't track PyCharm files
 .idea/
 __pycache__/
+# Don't track the dataset files
+3748_5967_bundle_archive/*

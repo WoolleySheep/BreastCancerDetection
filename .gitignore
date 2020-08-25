@@ -1,0 +1,5 @@
+# Don't track the virtual environment
+venv/
+# Don't track PyCharm files
+.idea/
+__pycache__/

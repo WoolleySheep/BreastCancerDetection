@@ -1,6 +1,8 @@
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
+import math
+import numpy as np
 
 
 def read_images_info():
@@ -9,24 +11,9 @@ def read_images_info():
     file_name = "info.txt"
 
     file_path = os.path.join(root_folder, file_name)
-    image_info_dict = pd.read_csv(file_path, sep=' ', index_col=0)
+    img_info_df = pd.read_csv(file_path, sep=' ', index_col=0)
 
-    return image_info_dict
-
-def read_images():
-
-    first_img_num = 1
-    last_img_num = 322
-
-    images = []
-
-    for curr_img_num in range(first_img_num, last_img_num + 1):
-        padded_num = str(curr_img_num).zfill(3)
-        file_name = "mdb" + padded_num
-        images.append(read_pgm(file_name))
-
-    return images
-
+    return img_info_df
 
 
 def read_pgm(file_name):
@@ -47,19 +34,49 @@ def read_pgm(file_name):
         depth = int(f.readline())
         assert depth <= 255
 
-        image_matrix = []
+        img_matrix = []
         for _ in range(height):
             row = []
             for _ in range(width):
                 row.append(ord(f.read(1)))
-            image_matrix.append(row)
+            img_matrix.append(row)
 
-    return image_matrix
+    return img_matrix
 
-info = read_images_info()
+def show_scan(image_num):
 
-images = read_images()
+    assert isinstance(image_num, int) and image_num >= 1 and image_num <= 322
 
-plt.matshow(images[100])
+    image_name = "mdb" + str(image_num).zfill(3)
 
-plt.show()
+    image_info_df = read_images_info()
+    curr_img_info_srs = image_info_df.loc[image_name, :]
+    print(curr_img_info_srs.RADIUS)
+
+    img_matrix = read_pgm(image_name)
+
+    plt.matshow(img_matrix, cmap="Blues")
+
+    if not math.isnan(curr_img_info_srs.RADIUS):
+        plt.scatter(curr_img_info_srs.X, curr_img_info_srs.Y, c='r')
+
+        x = []
+        y = []
+        for theta in np.linspace(0, 2 * math.pi, 100):
+            x.append(curr_img_info_srs.X + curr_img_info_srs.RADIUS * math.cos(theta))
+            y.append(curr_img_info_srs.Y + curr_img_info_srs.RADIUS * math.sin(theta))
+
+        plt.plot(x, y, c='r')
+
+        plt.title(f"{image_name} ({int(curr_img_info_srs.X)}, {int(curr_img_info_srs.Y)}) R: {int(curr_img_info_srs.RADIUS)}")
+
+    else:
+        plt.title(image_name)
+
+
+    plt.show()
+
+
+
+
+show_scan(5)

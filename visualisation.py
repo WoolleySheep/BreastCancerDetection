@@ -58,13 +58,13 @@ def show_scan(image_num):
     plt.matshow(img_matrix, cmap="Blues")
 
     if not math.isnan(curr_img_info_srs.RADIUS):
-        plt.scatter(curr_img_info_srs.X, curr_img_info_srs.Y, c='r')
+        plt.scatter(curr_img_info_srs.X, 1024 - curr_img_info_srs.Y, c='r')
 
         x = []
         y = []
         for theta in np.linspace(0, 2 * math.pi, 100):
             x.append(curr_img_info_srs.X + curr_img_info_srs.RADIUS * math.cos(theta))
-            y.append(curr_img_info_srs.Y + curr_img_info_srs.RADIUS * math.sin(theta))
+            y.append(1024 - curr_img_info_srs.Y + curr_img_info_srs.RADIUS * math.sin(theta))
 
         plt.plot(x, y, c='r')
 
@@ -76,7 +76,3 @@ def show_scan(image_num):
 
     plt.show()
 
-
-
-
-show_scan(5)
